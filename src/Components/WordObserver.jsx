@@ -5,30 +5,46 @@ import Observable from "../Scripts/Observable";
 export default class WordObserver extends React.PureComponent {
   constructor(props) {
     super(props);
-    this.observable = new Observable();
-    this.observable.subscribe(this.getPermutations);
-    this.observable.subscribe(this.getCombinations);
+    this.initializeObserver();
     this.state = {
       inputText: ""
     };
   }
 
-  initializeObserver = context => {};
+  initializeObservers = () => {
+    const obs = (this.observable = new Observable());
+    obs.subscribe(this.getPermutations);
+    obs.subscribe(this.getCombinations);
+    const observerContainer = document.querySelector("#wordObserverContainer");
+    observerContainer.addEventListener("keydown", function(event) {
+      if (event.target.id === "observerInput") {
+        obs.notify("data");
+      }
+    });
+  };
 
   getPermutations = data => {
-    document.querySelector("#permutations").textContent = "Permutations!";
+    document.querySelector("#permutations").textContent =
+      "Permutations of" + data;
   };
 
   getCombinations = data => {
-    document.querySelector("#combinations").textContent = "Combinations";
+    document.querySelector(
+      "#combinations"
+    ).textContent = `Combinations of ${data}`;
   };
   render() {
     return (
       <div>
         <div id="wordObserverContainer">
-          <input type="text" name="wordObserver" value={this.state.inputText} />
+          <input
+            id="observerInput"
+            type="text"
+            name="wordObserver"
+            value={this.state.inputText}
+          />
         </div>
-        <div id="permuations" />
+        <div id="permutations" />
         <div id="combinations" />
       </div>
     );
